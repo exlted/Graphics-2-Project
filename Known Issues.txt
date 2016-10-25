@@ -1,0 +1,2 @@
+dxgiDevice->SetMaximumFrameLatency(0) currently results in a GPU stall on FirePro Graphics card laptops when the swapchain presents the backbuffer.  This isn't supposed to happen and appears to be a bug in AMD drivers that were added 10.5.2016.
+
