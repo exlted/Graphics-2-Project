@@ -66,7 +66,7 @@ void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
 		);
 
 	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
-	
+
 }
 
 using namespace Windows::UI::Core;
@@ -119,7 +119,7 @@ void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
 	}
 
 	Windows::UI::Input::PointerPoint^ point = nullptr;
-	
+
 	//if(mouse_move)/*This crashes unless a mouse event actually happened*/
 		//point = Windows::UI::Input::PointerPoint::GetCurrentPoint(pointerID);
 
@@ -303,7 +303,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 	auto createCubeTask = (createPSTask && createVSTask).then([this] () {
 
 		// Load mesh vertices. Each vertex has a position and a color.
-		static const VertexPositionColor cubeVertices[] = 
+		static const VertexPositionColor cubeVertices[] =
 		{
 			{XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f)},
 			{XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
@@ -331,7 +331,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 		// Load mesh indices. Each trio of indices represents
 		// a triangle to be rendered on the screen.
 		// For example: 0,2,1 means that the vertices with indexes
-		// 0, 2 and 1 from the vertex buffer compose the 
+		// 0, 2 and 1 from the vertex buffer compose the
 		// first triangle of this mesh.
 		static const unsigned short cubeIndices [] =
 		{
