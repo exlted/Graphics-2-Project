@@ -67,8 +67,9 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="App2Main.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="ModelLoading.h">
-      <Filter>Content</Filter>
+    <ClCompile Include="RenderSystem.cpp" />
+    <ClCompile Include="Common\DDSTextureLoader.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Content</Filter>
@@ -81,6 +82,13 @@
     <ClInclude Include="Model.h">
       <Filter>Content</Filter>
     </ClInclude>
+    <ClInclude Include="RenderSystem.h" />
+    <ClInclude Include="ModelLoading.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DDSTextureLoader.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">
@@ -92,5 +100,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App2_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="InstancedVertexShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
+    <FxCompile Include="TexturedLitPixelShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

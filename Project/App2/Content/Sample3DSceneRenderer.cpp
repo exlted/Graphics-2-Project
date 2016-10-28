@@ -19,7 +19,7 @@ Sample3DSceneRenderer::Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceRes
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
-	//XMStoreFloat4x4(&view, XMMatrixIdentity());
+	XMStoreFloat4x4(&camera, XMMatrixIdentity());
 
 	static const XMVECTORF32 eye = { 0.0f, 0.0f, -1.5f, 0.0f };
 	static const XMVECTORF32 at = { 0.0f, 0.0f, 0.0f, 0.0f };

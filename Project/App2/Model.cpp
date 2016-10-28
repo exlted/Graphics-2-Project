@@ -2,15 +2,30 @@
 #include "Model.h"
 #include "..\Common\DirectXHelper.h"
 
-Model::Model(char modelName[], DirectX::XMFLOAT4X4 * camera, std::shared_ptr<DX::DeviceResources> m_deviceResources)
+Model::Model(char modelName[], DirectX::XMFLOAT4X4 * camera, DirectX::XMFLOAT4X4* projection, std::shared_ptr<DX::DeviceResources> m_deviceResources, lightProperties * Lights)
 {
 	this->modelName = modelName;
 	this->Camera = camera;
+	this->Projection = projection;
 	this->m_deviceResources = m_deviceResources;
+	this->Lights = Lights;
 }
 
 void Model::Update(DX::StepTimer const & timer)
 {
+	if (!m_loadingComplete)
+	{
+		return;
+	}
+
+	auto context = m_deviceResources->GetD3DDeviceContext();
+
+	DirectX::XMMATRIX cam = XMLoadFloat4x4(Camera);
+	DirectX::XMMATRIX proj = XMLoadFloat4x4(Projection);
+
+	data.ViewProjection = XMMatrixTranspose(XMMatrixMultiply(cam, proj));
+	data.WorldMatrix = DirectX::XMMatrixIdentity();
+	data.InverseTransposeWorldMatrix = XMMatrixInverse(nullptr, XMMatrixTranspose(data.WorldMatrix));
 	return;
 }
 
@@ -22,13 +37,33 @@ bool Model::Render()
 	}
 
 	auto context = m_deviceResources->GetD3DDeviceContext();
+	context->UpdateSubresource(m_constantBuffer.Get(), 0, nullptr, &data, 0, 0);
+	unsigned int stride = sizeof(VertexPTN);
+	unsigned int offset = 0;
+	ID3D11Buffer* buffers = m_vertexBuffer.Get();
+	context->IASetVertexBuffers(0, 1, &buffers, &stride, &offset);
+	context->IASetInputLayout(m_inputLayout.Get());
+	context->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
+	context->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
+
+	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
+	ID3D11Buffer* pixelShaderConstantBuffers[2] = {m_pixelShaderMatConstBuff.Get(), m_pixelShaderLightConstBuff.Get()};
+	context->PSSetConstantBuffers(0, 2, pixelShaderConstantBuffers);
+	context->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+	context->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
+
+	context->DrawIndexed(indexCount, 0, 0);
+
 	return true;
 }
 
 void Model::CreateDeviceDependentResources()
 {
-	auto loadVSTask = DX::ReadDataAsync(L"SampleVertexShader.cso");
-	auto loadPSTask = DX::ReadDataAsync(L"SamplePixelShader.cso");
+	auto loadVSTask = DX::ReadDataAsync(L"VertexShader.cso");
+	auto loadPSTask = DX::ReadDataAsync(L"TexturedLitPixelShader.cso");
 
 	auto createVSTask = loadVSTask.then([this](const std::vector<byte>& fileData) {
 		DX::ThrowIfFailed(
@@ -42,10 +77,36 @@ void Model::CreateDeviceDependentResources()
 
 		static const D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 		{
-			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
+
+		//static const D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+		//{
+		//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		//	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		//	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		//	{ "WORLDMATRIX", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		//	{ "INVERSETRANSPOSEWORLDMATRIX", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1}
+		//};
+
+		//D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+		//{
+		//	// Per-vertex data.
+		//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		//	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		//	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		//	// Per-instance data.
+		//	{ "WORLDMATRIX", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		//	{ "WORLDMATRIX", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		//	{ "WORLDMATRIX", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		//	{ "WORLDMATRIX", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		//	{ "INVERSETRANSPOSEWORLDMATRIX", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		//	{ "INVERSETRANSPOSEWORLDMATRIX", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		//	{ "INVERSETRANSPOSEWORLDMATRIX", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		//	{ "INVERSETRANSPOSEWORLDMATRIX", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		//};
 
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateInputLayout(
@@ -68,12 +129,30 @@ void Model::CreateDeviceDependentResources()
 			)
 		);
 
-		CD3D11_BUFFER_DESC constantBufferDesc(sizeof(App2::ModelViewProjectionConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+		CD3D11_BUFFER_DESC constantBufferDesc(sizeof(SingleModelData), D3D11_BIND_CONSTANT_BUFFER);
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateBuffer(
 				&constantBufferDesc,
 				nullptr,
 				&m_constantBuffer
+			)
+		);
+
+		CD3D11_BUFFER_DESC lightBufferDesc(sizeof(lightProperties), D3D11_BIND_CONSTANT_BUFFER);
+		DX::ThrowIfFailed(
+			m_deviceResources->GetD3DDevice()->CreateBuffer(
+				&lightBufferDesc,
+				nullptr,
+				&m_pixelShaderLightConstBuff
+			)
+		);
+
+		CD3D11_BUFFER_DESC matBufferDesc(sizeof(MaterialProperties), D3D11_BIND_CONSTANT_BUFFER);
+		DX::ThrowIfFailed(
+			m_deviceResources->GetD3DDevice()->CreateBuffer(
+				&matBufferDesc,
+				nullptr,
+				&m_pixelShaderMatConstBuff
 			)
 		);
 	});
@@ -82,13 +161,14 @@ void Model::CreateDeviceDependentResources()
 
 		// Load mesh vertices. Each vertex has a position and a color.
 
-		//this->Mesh = LoadModel(modelName);
+		ModelReturn r = LoadModel(modelName);
+		this->Mesh = r.vert;
 
 		D3D11_SUBRESOURCE_DATA vertexBufferData = { 0 };
 		vertexBufferData.pSysMem = this->Mesh;
 		vertexBufferData.SysMemPitch = 0;
 		vertexBufferData.SysMemSlicePitch = 0;
-		CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(&Mesh), D3D11_BIND_VERTEX_BUFFER);
+		CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(VertexPTN) * r.numVerts, D3D11_BIND_VERTEX_BUFFER);
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateBuffer(
 				&vertexBufferDesc,
@@ -96,25 +176,49 @@ void Model::CreateDeviceDependentResources()
 				&m_vertexBuffer
 			)
 		);
+		auto device = m_deviceResources->GetD3DDevice();
+		HRESULT hr = CreateDDSTextureFromFile(device, r.texture, nullptr, &m_Texture, 0);
+
+		D3D11_SAMPLER_DESC samplerDesc;
+		ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
+
+		samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+		samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+		samplerDesc.MipLODBias = 0.0f;
+		samplerDesc.MaxAnisotropy = 1;
+		samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+		samplerDesc.BorderColor[0] = 1.0f;
+		samplerDesc.BorderColor[1] = 1.0f;
+		samplerDesc.BorderColor[2] = 1.0f;
+		samplerDesc.BorderColor[3] = 1.0f;
+		samplerDesc.MinLOD = -FLT_MAX;
+		samplerDesc.MaxLOD = FLT_MAX;
+
+		hr = device->CreateSamplerState(&samplerDesc, &m_sampler);
+
+
 
 		// Load mesh indices. Each trio of indices represents
 		// a triangle to be rendered on the screen.
 		// For example: 0,2,1 means that the vertices with indexes
 		// 0, 2 and 1 from the vertex buffer compose the
 		// first triangle of this mesh.
-		unsigned int *indices = new unsigned int[sizeof(&Mesh)];
-		for (unsigned int i = 0; i < sizeof(&Mesh); i++)
+		unsigned int *indices = new unsigned int[r.numVerts];
+		this->indexCount = 0;
+		for (unsigned int i = 0; i < r.numVerts; i++)
 		{
 			indices[i] = i;
+			indexCount++;
 		}
 
-		unsigned int m_indexCount = sizeof(&indices);
 
 		D3D11_SUBRESOURCE_DATA indexBufferData = { 0 };
 		indexBufferData.pSysMem = indices;
 		indexBufferData.SysMemPitch = 0;
 		indexBufferData.SysMemSlicePitch = 0;
-		CD3D11_BUFFER_DESC indexBufferDesc(sizeof(&indices), D3D11_BIND_INDEX_BUFFER);
+		CD3D11_BUFFER_DESC indexBufferDesc(sizeof(unsigned int) * r.numVerts, D3D11_BIND_INDEX_BUFFER);
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateBuffer(
 				&indexBufferDesc,
@@ -128,46 +232,6 @@ void Model::CreateDeviceDependentResources()
 		m_loadingComplete = true;
 	});
 
-}
-
-void Model::CreateWindowSizeDependentResources()
-{
-
-	Windows::Foundation::Size outputSize = m_deviceResources->GetOutputSize();
-	float aspectRatio = outputSize.Width / outputSize.Height;
-	float fovAngleY = 60.0f * DirectX::XM_PI / 180.0f;
-
-	// This is a simple example of change that can be made when the app is in
-	// portrait or snapped view.
-	if (aspectRatio < 1.0f)
-	{
-		fovAngleY *= 2.0f;
-	}
-
-	// Note that the OrientationTransform3D matrix is post-multiplied here
-	// in order to correctly orient the scene to match the display orientation.
-	// This post-multiplication step is required for any draw calls that are
-	// made to the swap chain render target. For draw calls to other targets,
-	// this transform should not be applied.
-
-	// This sample makes use of a right-handed coordinate system using row-major matrices.
-	DirectX::XMMATRIX perspectiveMatrix = DirectX::XMMatrixPerspectiveFovRH(
-		fovAngleY,
-		aspectRatio,
-		0.01f,
-		100.0f
-	);
-
-	DirectX::XMFLOAT4X4 orientation = m_deviceResources->GetOrientationTransform3D();
-
-	DirectX::XMMATRIX orientationMatrix = XMLoadFloat4x4(&orientation);
-
-	//XMStoreFloat4x4(
-	//	&m_constantBufferData.projection,
-	//	XMMatrixTranspose(perspectiveMatrix * orientationMatrix)
-	//);
-
-	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
 }
 
 void Model::ReleaseDeviceDependentResources()

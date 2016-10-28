@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "App2Main.h"
 #include "Common\DirectXHelper.h"
-
 #include <Windows.h>
 
 using namespace App2;
@@ -18,7 +17,7 @@ App2Main::App2Main(const std::shared_ptr<DX::DeviceResources>& deviceResources) 
 
 	// TODO: Replace this with your app's content initialization.
 	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(m_deviceResources));
-
+	m_renderSystem = std::unique_ptr<RenderSystem>(new RenderSystem(m_deviceResources));
 	m_fpsTextRenderer = std::unique_ptr<SampleFpsTextRenderer>(new SampleFpsTextRenderer(m_deviceResources));
 
 	// TODO: Change the timer settings if you want something other than the default variable timestep mode.
@@ -36,7 +35,7 @@ App2Main::~App2Main()
 }
 
 // Updates application state when the window size changes (e.g. device orientation change)
-void App2Main::CreateWindowSizeDependentResources() 
+void App2Main::CreateWindowSizeDependentResources()
 {
 	// TODO: Replace this with the size-dependent initialization of your app's content.
 	m_sceneRenderer->CreateWindowSizeDependentResources();
@@ -45,7 +44,7 @@ void App2Main::CreateWindowSizeDependentResources()
 using namespace Windows::UI::Core;
 extern CoreWindow^ gwindow;
 // Updates the application state once per frame.
-void App2Main::Update() 
+void App2Main::Update()
 {
 	if (Windows::UI::Core::CoreVirtualKeyStates::Down == gwindow->GetAsyncKeyState(Windows::System::VirtualKey::Space))
 	{
@@ -60,12 +59,13 @@ void App2Main::Update()
 		// TODO: Replace this with your app's content update functions.
 		m_sceneRenderer->Update(m_timer);
 		m_fpsTextRenderer->Update(m_timer);
+		m_renderSystem->Update(m_timer);
 	});
 }
 
 // Renders the current frame according to the current application state.
 // Returns true if the frame was rendered and is ready to be displayed.
-bool App2Main::Render() 
+bool App2Main::Render()
 {
 	// Don't try to render anything before the first Update.
 	if (m_timer.GetFrameCount() == 0)
@@ -91,7 +91,7 @@ bool App2Main::Render()
 	// TODO: Replace this with your app's content rendering functions.
 	m_sceneRenderer->Render();
 	m_fpsTextRenderer->Render();
-
+	m_renderSystem->Render();
 	return true;
 }
 
