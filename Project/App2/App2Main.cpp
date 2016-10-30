@@ -38,7 +38,8 @@ App2Main::~App2Main()
 void App2Main::CreateWindowSizeDependentResources()
 {
 	// TODO: Replace this with the size-dependent initialization of your app's content.
-	m_sceneRenderer->CreateWindowSizeDependentResources();
+	//m_sceneRenderer->CreateWindowSizeDependentResources();
+	m_renderSystem->CreateWindowSizeDependentResources();
 }
 
 using namespace Windows::UI::Core;

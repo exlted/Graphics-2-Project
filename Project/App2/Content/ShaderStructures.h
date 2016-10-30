@@ -18,6 +18,12 @@ namespace App2
 		DirectX::XMFLOAT3 color;
 	};
 
+	struct VertexTex
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT2 uv;
+	};
+
 	struct VertexNormalColor
 	{
 		DirectX::XMFLOAT3 pos;

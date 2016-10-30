@@ -11,6 +11,7 @@ RenderSystem::RenderSystem(std::shared_ptr<DX::DeviceResources> m_deviceResource
 	XMStoreFloat4x4(&Camera, XMMatrixLookAtRH(eye, at, up));
 	this->Models = new Model("Helicopter.obj", &Camera , &Projection, m_deviceResources, &m_LightProperties);
 	this->Cube = new GeneratedCube(m_deviceResources, &Camera, &Projection, &m_LightProperties);
+	this->skybox = new Skybox(m_deviceResources, &Camera, &Projection, &m_LightProperties);
 	this->m_deviceResources = m_deviceResources;
 	this->CreateWindowSizeDependentResources();
 	int i = 0;
@@ -119,12 +120,14 @@ void RenderSystem::Update(DX::StepTimer const & timer)
 	m_LightProperties.GlobalAmbient = XMFLOAT4{ 1.0f, 1.0f, 1.0f, 1.0f };
 	Models->Update(timer);
 	Cube->Update(timer);
+	skybox->Update(timer);
 	totalTime += (float)timer.GetElapsedSeconds();
 }
 
 bool RenderSystem::Render()
 {
 	Models->Render();
+	skybox->Render();
 	Cube->Render();
 	return true;
 }

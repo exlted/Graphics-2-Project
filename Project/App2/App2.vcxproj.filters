@@ -75,6 +75,7 @@
       <Filter>Content</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedCube.cpp" />
+    <ClCompile Include="Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -91,6 +92,7 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedCube.h" />
+    <ClInclude Include="Skybox.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">
@@ -117,6 +119,12 @@
       <Filter>Content</Filter>
     </FxCompile>
     <FxCompile Include="ColoredLitPixelShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyboxVertShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyboxPixelShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
   </ItemGroup>

@@ -4,6 +4,8 @@
 #include <DirectXMath.h>
 #include "Content\ShaderStructures.h"
 #include "GeneratedCube.h"
+#include "Skybox.h"
+
 using namespace DirectX;
 struct PerFrameConstantBufferData
 {
@@ -14,6 +16,7 @@ class RenderSystem
 {
 	Model *Models;
 	GeneratedCube *Cube;
+	Skybox *skybox;
 	PerFrameConstantBufferData data;
 	std::shared_ptr<DX::DeviceResources> m_deviceResources;
 	DirectX::XMFLOAT4X4 Camera, Projection;
