@@ -2,6 +2,8 @@
 #include "Model.h"
 
 #include <DirectXMath.h>
+#include "Content\ShaderStructures.h"
+#include "GeneratedCube.h"
 using namespace DirectX;
 struct PerFrameConstantBufferData
 {
@@ -11,6 +13,7 @@ struct PerFrameConstantBufferData
 class RenderSystem
 {
 	Model *Models;
+	GeneratedCube *Cube;
 	PerFrameConstantBufferData data;
 	std::shared_ptr<DX::DeviceResources> m_deviceResources;
 	DirectX::XMFLOAT4X4 Camera, Projection;

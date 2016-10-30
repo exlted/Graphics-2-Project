@@ -11,14 +11,14 @@ struct AppData
 	//Per-vertex data
 	float3 Position : POSITION;
 	float3 Normal   : NORMAL;
-	float3 TexCoord : TEXCOORD;
+	float3 Color : COLOR;
 };
 
 struct VertexShaderOutput
 {
 	float4 PositionWS   : TEXCOORD1;
 	float3 NormalWS     : TEXCOORD2;
-	float2 TexCoord     : TEXCOORD0;
+	float4 Color     : COLOR;
 	float4 Position     : SV_Position;
 };
 
@@ -32,9 +32,10 @@ VertexShaderOutput main(AppData IN)
 	OUT.Position = mul(ViewMatrix, OUT.Position);
 	OUT.Position = mul(ProjectionMatrix, OUT.Position);
 
+	//OUT.Position = mul(MVP, float4(IN.Position, 1.0f));
 	OUT.PositionWS = mul(Matrix, float4(IN.Position, 1.0f));
 	OUT.NormalWS = mul((float3x3)InverseTranspose, IN.Normal);
-	OUT.TexCoord = IN.TexCoord;
+	OUT.Color = float4(IN.Color, 1);
 
 	return OUT;
 }

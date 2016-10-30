@@ -5,9 +5,6 @@
 #define POINT_LIGHT 1
 #define SPOT_LIGHT 2
 
-Texture2D Texture : register(t0);
-sampler Sampler : register(s0);
-
 struct _Material
 {
 	float4 Emissive;
@@ -124,7 +121,7 @@ LightingResult DoSpotLight(Light light, float3 V, float4 P, float3 N)
 LightingResult ComputeLighting(float4 P, float3 N)
 {
 	float3 V = normalize(EyePosition - P).xyz;
-	LightingResult totalResult = { {0,0,0,0},{0,0,0,0} };
+	LightingResult totalResult = { { 0,0,0,0 },{ 0,0,0,0 } };
 
 	for (int i = 0; i < 8; ++i)
 	{
@@ -164,26 +161,21 @@ struct PixelShaderInput
 {
 	float4 PositionWS : TEXCOORD1;
 	float3 NormalWS   : TEXCOORD2;
-	float2 TexCoord   : TEXCOORD0;
+	float4 Color   : COLOR;
 };
 
 float4 main(PixelShaderInput IN) : SV_TARGET
 {
 	LightingResult lit = ComputeLighting(IN.PositionWS, normalize(IN.NormalWS));
 
-	float4 emissive = Material.Emissive;
-	float4 ambient = Material.Ambient * GlobalAmbient;
-	float4 diffuse = Material.Diffuse * lit.Diffuse;
-	float4 specular = Material.Specular * lit.Specular;
+float4 emissive = Material.Emissive;
+float4 ambient = Material.Ambient * GlobalAmbient;
+float4 diffuse = Material.Diffuse * lit.Diffuse;
+float4 specular = Material.Specular * lit.Specular;
 
-	float4 texColor = { 1, 1, 1, 1 };
+float4 texColor = IN.Color;
 
-	if (Material.UseTexture)
-	{
-		texColor = Texture.Sample(Sampler, IN.TexCoord);
-	}
-
-	float4 finalColor = (emissive + ambient + diffuse + specular) * texColor;
-	return texColor;
-	//return finalColor;
+float4 finalColor = (emissive + ambient + diffuse + specular) * texColor;
+return texColor;
+//return finalColor;
 }

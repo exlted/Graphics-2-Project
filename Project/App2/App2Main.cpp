@@ -16,7 +16,7 @@ App2Main::App2Main(const std::shared_ptr<DX::DeviceResources>& deviceResources) 
 	m_deviceResources->RegisterDeviceNotify(this);
 
 	// TODO: Replace this with your app's content initialization.
-	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(m_deviceResources));
+	//m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(m_deviceResources));
 	m_renderSystem = std::unique_ptr<RenderSystem>(new RenderSystem(m_deviceResources));
 	m_fpsTextRenderer = std::unique_ptr<SampleFpsTextRenderer>(new SampleFpsTextRenderer(m_deviceResources));
 
@@ -57,7 +57,7 @@ void App2Main::Update()
 	m_timer.Tick([&]()
 	{
 		// TODO: Replace this with your app's content update functions.
-		m_sceneRenderer->Update(m_timer);
+		//m_sceneRenderer->Update(m_timer);
 		m_fpsTextRenderer->Update(m_timer);
 		m_renderSystem->Update(m_timer);
 	});
@@ -89,7 +89,7 @@ bool App2Main::Render()
 
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
-	m_sceneRenderer->Render();
+	//m_sceneRenderer->Render();
 	m_fpsTextRenderer->Render();
 	m_renderSystem->Render();
 	return true;

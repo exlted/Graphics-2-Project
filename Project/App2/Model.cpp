@@ -9,6 +9,7 @@ Model::Model(char modelName[], DirectX::XMFLOAT4X4 * camera, DirectX::XMFLOAT4X4
 	this->Projection = projection;
 	this->m_deviceResources = m_deviceResources;
 	this->Lights = Lights;
+	this->CreateDeviceDependentResources();
 }
 
 void Model::Update(DX::StepTimer const & timer)
@@ -20,12 +21,12 @@ void Model::Update(DX::StepTimer const & timer)
 
 	auto context = m_deviceResources->GetD3DDeviceContext();
 
-	DirectX::XMMATRIX cam = XMLoadFloat4x4(Camera);
-	DirectX::XMMATRIX proj = XMLoadFloat4x4(Projection);
-
-	data.ViewProjection = XMMatrixTranspose(XMMatrixMultiply(cam, proj));
-	data.WorldMatrix = DirectX::XMMatrixIdentity();
-	data.InverseTransposeWorldMatrix = XMMatrixInverse(nullptr, XMMatrixTranspose(data.WorldMatrix));
+	auto cam = DirectX::XMMatrixInverse(0, DirectX::XMLoadFloat4x4(Camera));
+	DirectX::XMStoreFloat4x4(&data.View, DirectX::XMMatrixTranspose(DirectX::XMMatrixTranspose(cam)));
+	DirectX::XMStoreFloat4x4(&data.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(Projection)));
+	DirectX::XMStoreFloat4x4(&data.WorldMatrix, XMMatrixTranspose(DirectX::XMMatrixIdentity()));
+	DirectX::XMStoreFloat4x4(&data.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&data.WorldMatrix)))));
+	Props.Material.UseTexture = true;
 	return;
 }
 
@@ -38,6 +39,9 @@ bool Model::Render()
 
 	auto context = m_deviceResources->GetD3DDeviceContext();
 	context->UpdateSubresource(m_constantBuffer.Get(), 0, nullptr, &data, 0, 0);
+	context->UpdateSubresource(m_pixelShaderLightConstBuff.Get(), 0, nullptr, &Lights, 0, 0);
+	context->UpdateSubresource(m_pixelShaderMatConstBuff.Get(), 0, nullptr, &Props, 0, 0);
+
 	unsigned int stride = sizeof(VertexPTN);
 	unsigned int offset = 0;
 	ID3D11Buffer* buffers = m_vertexBuffer.Get();
@@ -56,6 +60,7 @@ bool Model::Render()
 	context->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
 
 	context->DrawIndexed(indexCount, 0, 0);
+	//context->Draw(indexCount, 0);
 
 	return true;
 }
@@ -205,20 +210,15 @@ void Model::CreateDeviceDependentResources()
 		// For example: 0,2,1 means that the vertices with indexes
 		// 0, 2 and 1 from the vertex buffer compose the
 		// first triangle of this mesh.
-		unsigned int *indices = new unsigned int[r.numVerts];
-		this->indexCount = 0;
-		for (unsigned int i = 0; i < r.numVerts; i++)
-		{
-			indices[i] = i;
-			indexCount++;
-		}
+		uint16_t *indices = r.indices;
+		this->indexCount = r.numIndices;
 
 
 		D3D11_SUBRESOURCE_DATA indexBufferData = { 0 };
 		indexBufferData.pSysMem = indices;
 		indexBufferData.SysMemPitch = 0;
 		indexBufferData.SysMemSlicePitch = 0;
-		CD3D11_BUFFER_DESC indexBufferDesc(sizeof(unsigned int) * r.numVerts, D3D11_BIND_INDEX_BUFFER);
+		CD3D11_BUFFER_DESC indexBufferDesc(sizeof(uint16_t) * r.numIndices, D3D11_BIND_INDEX_BUFFER);
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateBuffer(
 				&indexBufferDesc,

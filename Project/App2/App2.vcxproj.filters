@@ -74,6 +74,7 @@
     <ClCompile Include="Model.cpp">
       <Filter>Content</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedCube.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -89,6 +90,7 @@
     <ClInclude Include="Common\DDSTextureLoader.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedCube.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">
@@ -109,6 +111,12 @@
       <Filter>Content</Filter>
     </FxCompile>
     <FxCompile Include="VertexShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
+    <FxCompile Include="ColoredVertexShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
+    <FxCompile Include="ColoredLitPixelShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
   </ItemGroup>
