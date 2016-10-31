@@ -37,7 +37,7 @@ namespace App2
 		DirectX::XMFLOAT4X4 Projection;
 	};
 
-	__declspec(align(16))  struct ModelInstanceData
+	struct ModelInstanceData
 	{
 		DirectX::XMFLOAT4X4 WorldMatrix;
 		DirectX::XMFLOAT4X4 InverseTransposeWorldMatrix;

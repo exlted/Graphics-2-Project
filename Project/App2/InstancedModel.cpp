@@ -27,7 +27,7 @@ void InstancedModel::Update(DX::StepTimer const & timer)
 	DirectX::XMStoreFloat4x4(&WorldData.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(Projection)));
 	for(unsigned int i = 0; i < instanceCount; i++)
 	{
-		DirectX::XMMATRIX transpose = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&(DirectX::XMFLOAT4((float)i + 1, (float)i + 1, (float)i - 2, 1))));
+		DirectX::XMMATRIX transpose = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&(DirectX::XMFLOAT4((float)i*12.5f, 5, 5, 1))));
 		DirectX::XMStoreFloat4x4(&dataInstances[i].WorldMatrix,transpose);
 		DirectX::XMStoreFloat4x4(&dataInstances[i].InverseTransposeWorldMatrix, DirectX::XMMatrixTranspose(XMMatrixInverse(nullptr, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&dataInstances[i].WorldMatrix)))));
 	}
@@ -44,14 +44,14 @@ bool InstancedModel::Render()
 
 	auto context = m_deviceResources->GetD3DDeviceContext();
 	context->UpdateSubresource(m_constantBuffer.Get(), 0, nullptr, &WorldData, 0, 0);
-	context->UpdateSubresource(m_instanceBuffer.Get(), 0, nullptr, &dataInstances, 0, 0);
-	context->UpdateSubresource(m_pixelShaderLightConstBuff.Get(), 0, nullptr, &Lights, 0, 0);
+	context->UpdateSubresource(m_instanceBuffer.Get(), 0, nullptr, dataInstances, 0, 0);
+	context->UpdateSubresource(m_pixelShaderLightConstBuff.Get(), 0, nullptr, Lights, 0, 0);
 	context->UpdateSubresource(m_pixelShaderMatConstBuff.Get(), 0, nullptr, &Props, 0, 0);
 
-	unsigned int stride = sizeof(VertexPTN);
-	unsigned int offset = 0;
+	unsigned int stride[2] = { sizeof(VertexPTN), sizeof(ModelInstanceData) };
+	unsigned int offset[2] = { 0,0 };
 	ID3D11Buffer* buffers[2] = { m_vertexBuffer.Get(), m_instanceBuffer.Get() };
-	context->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
+	context->IASetVertexBuffers(0, 2, buffers, stride, offset);
 	context->IASetInputLayout(m_inputLayout.Get());
 	context->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -131,7 +131,7 @@ void InstancedModel::CreateDeviceDependentResources()
 			)
 		);
 
-		CD3D11_BUFFER_DESC constantBufferDesc(sizeof(SingleModelData), D3D11_BIND_CONSTANT_BUFFER);
+		CD3D11_BUFFER_DESC constantBufferDesc(sizeof(WholeInstanceData), D3D11_BIND_CONSTANT_BUFFER);
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateBuffer(
 				&constantBufferDesc,
@@ -179,8 +179,7 @@ void InstancedModel::CreateDeviceDependentResources()
 				&m_vertexBuffer
 			)
 		);
-
-		CD3D11_BUFFER_DESC instanceBufferDesc(sizeof(ModelInstanceData) * this->instanceCount, D3D11_BIND_CONSTANT_BUFFER);
+		CD3D11_BUFFER_DESC instanceBufferDesc(sizeof(ModelInstanceData) * this->instanceCount, D3D11_BIND_VERTEX_BUFFER);
 		DX::ThrowIfFailed(
 			m_deviceResources->GetD3DDevice()->CreateBuffer(
 				&instanceBufferDesc,
