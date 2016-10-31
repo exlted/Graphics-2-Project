@@ -91,8 +91,8 @@ bool App2Main::Render()
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
 	//m_sceneRenderer->Render();
-	m_fpsTextRenderer->Render();
 	m_renderSystem->Render();
+	m_fpsTextRenderer->Render();
 	return true;
 }
 

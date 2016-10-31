@@ -1,6 +1,7 @@
 cbuffer perFrame : register(b0)
 {
-	matrix ViewProjectionMatrix;
+	matrix View;
+	matrix Projection;
 }
 
 struct AppData
@@ -26,9 +27,10 @@ VertexShaderOutput main(AppData IN)
 {
 	VertexShaderOutput OUT;
 
-	matrix MVP = mul(ViewProjectionMatrix, IN.Matrix);
+	OUT.Position = mul(IN.Matrix, float4(IN.Position, 1.0f));
+	OUT.Position = mul(View, OUT.Position);
+	OUT.Position = mul(Projection, OUT.Position);
 
-	OUT.Position = mul(MVP, float4(IN.Position, 1.0f));
 	OUT.PositionWS = mul(IN.Matrix, float4(IN.Position, 1.0f));
 	OUT.NormalWS = mul((float3x3)IN.InverseTranspose, IN.Normal);
 	OUT.TexCoord = IN.TexCoord;

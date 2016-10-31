@@ -9,7 +9,8 @@ RenderSystem::RenderSystem(std::shared_ptr<DX::DeviceResources> m_deviceResource
 	static const DirectX::XMVECTORF32 at = { 0.0f, 0.0f, 0.0f, 0.0f };
 	static const DirectX::XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
 	XMStoreFloat4x4(&Camera, XMMatrixLookAtRH(eye, at, up));
-	this->Models = new Model("Helicopter.obj", &Camera , &Projection, m_deviceResources, &m_LightProperties);
+	this->Models = new Model("Assets\\Helicopter.obj", &Camera , &Projection, m_deviceResources, &m_LightProperties);
+	this->InstancedModels = new InstancedModel("Assets\\Helicopter.obj", &Camera, &Projection, m_deviceResources, &m_LightProperties, 2);
 	this->Cube = new GeneratedCube(m_deviceResources, &Camera, &Projection, &m_LightProperties);
 	this->skybox = new Skybox(m_deviceResources, &Camera, &Projection, &m_LightProperties);
 	this->m_deviceResources = m_deviceResources;
@@ -23,6 +24,8 @@ RenderSystem::~RenderSystem()
 	delete Models;
 	Cube->ReleaseDeviceDependentResources();
 	delete Cube;
+	InstancedModels->ReleaseDeviceDependentResources();
+	delete InstancedModels;
 }
 
 using namespace Windows::UI::Core;
@@ -119,8 +122,9 @@ void RenderSystem::Update(DX::StepTimer const & timer)
 	}
 	m_LightProperties.GlobalAmbient = XMFLOAT4{ 1.0f, 1.0f, 1.0f, 1.0f };
 	Models->Update(timer);
-	Cube->Update(timer);
+	//Cube->Update(timer);
 	skybox->Update(timer);
+	InstancedModels->Update(timer);
 	totalTime += (float)timer.GetElapsedSeconds();
 }
 
@@ -128,7 +132,8 @@ bool RenderSystem::Render()
 {
 	Models->Render();
 	skybox->Render();
-	Cube->Render();
+	//Cube->Render();
+	InstancedModels->Render();
 	return true;
 }
 

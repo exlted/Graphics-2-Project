@@ -1,6 +1,6 @@
 #pragma once
 #include "Model.h"
-
+#include "InstancedModel.h"
 #include <DirectXMath.h>
 #include "Content\ShaderStructures.h"
 #include "GeneratedCube.h"
@@ -15,6 +15,7 @@ struct PerFrameConstantBufferData
 class RenderSystem
 {
 	Model *Models;
+	InstancedModel *InstancedModels;
 	GeneratedCube *Cube;
 	Skybox *skybox;
 	PerFrameConstantBufferData data;

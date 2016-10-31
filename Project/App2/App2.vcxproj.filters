@@ -76,6 +76,7 @@
     </ClCompile>
     <ClCompile Include="GeneratedCube.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="InstancedModel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -93,9 +94,19 @@
     </ClInclude>
     <ClInclude Include="GeneratedCube.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="InstancedModel.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\helicopter.dds">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\night_skybox.dds">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Helicopter.obj">
       <Filter>Assets</Filter>
     </Image>
   </ItemGroup>
@@ -104,6 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App2_TemporaryKey.pfx" />
+    <None Include="Assets\Helicopter.mtl">
+      <Filter>Assets</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="InstancedVertexShader.hlsl">

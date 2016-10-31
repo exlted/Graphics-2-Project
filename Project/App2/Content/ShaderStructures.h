@@ -31,10 +31,16 @@ namespace App2
 		DirectX::XMFLOAT3 color;
 	};
 
-	__declspec(align(16))  struct PlaneInstanceData
+	struct WholeInstanceData
 	{
-		DirectX::XMMATRIX WorldMatrix;
-		DirectX::XMMATRIX InverseTransposeWorldMatrix;
+		DirectX::XMFLOAT4X4 View;
+		DirectX::XMFLOAT4X4 Projection;
+	};
+
+	__declspec(align(16))  struct ModelInstanceData
+	{
+		DirectX::XMFLOAT4X4 WorldMatrix;
+		DirectX::XMFLOAT4X4 InverseTransposeWorldMatrix;
 	};
 
 	struct SingleModelData
