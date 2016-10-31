@@ -62,6 +62,7 @@ bool InstancedModel::Render()
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 	ID3D11Buffer* pixelShaderConstantBuffers[2] = { m_pixelShaderMatConstBuff.Get(), m_pixelShaderLightConstBuff.Get() };
 	context->PSSetConstantBuffers(0, 2, pixelShaderConstantBuffers);
+	//texturing
 	context->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
 	context->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
 

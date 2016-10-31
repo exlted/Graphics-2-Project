@@ -39,7 +39,7 @@ bool Model::Render()
 
 	auto context = m_deviceResources->GetD3DDeviceContext();
 	context->UpdateSubresource(m_constantBuffer.Get(), 0, nullptr, &data, 0, 0);
-	context->UpdateSubresource(m_pixelShaderLightConstBuff.Get(), 0, nullptr, &Lights, 0, 0);
+	context->UpdateSubresource(m_pixelShaderLightConstBuff.Get(), 0, nullptr, Lights, 0, 0);
 	context->UpdateSubresource(m_pixelShaderMatConstBuff.Get(), 0, nullptr, &Props, 0, 0);
 
 	unsigned int stride = sizeof(VertexPTN);
@@ -168,7 +168,6 @@ void Model::CreateDeviceDependentResources()
 
 		ModelReturn r = LoadModel(modelName);
 		this->Mesh = r.vert;
-
 		D3D11_SUBRESOURCE_DATA vertexBufferData = { 0 };
 		vertexBufferData.pSysMem = this->Mesh;
 		vertexBufferData.SysMemPitch = 0;

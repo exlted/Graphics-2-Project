@@ -59,6 +59,8 @@ inline ModelReturn LoadModel(char* fileName)
 		{
 			DirectX::XMFLOAT3 uv;
 			fscanf_s(file, "%f %f\n", &uv.x, &uv.y);
+			uv.y *= -1;
+			uv.y += 1;
 			uvs.push_back(uv);
 		}
 		else if (strcmp(lineHeader, "vn") == 0)
@@ -113,8 +115,10 @@ inline ModelReturn LoadModel(char* fileName)
 		else if(strcmp(lineHeader, "mtllib") == 0)
 		{
 			FILE *file2;
+			std::string loc = "Assets\\";
 			fscanf_s(file, "%s ", lineHeader, 128);
-			fopen_s(&file2, lineHeader, "r");
+			loc += lineHeader;
+			fopen_s(&file2, loc.c_str(), "r");
 			if(file2 != NULL)
 			{
 				while(true)
@@ -123,8 +127,10 @@ inline ModelReturn LoadModel(char* fileName)
 					if(strcmp(lineHeader, "map_Kd") == 0)
 					{
 						fscanf_s(file2, "%s ", lineHeader, 128);
+						std::string loc = "Assets\\";
+						loc += lineHeader;
 						size_t i;
-						mbstowcs_s(&i, rv1.texture, 128, lineHeader, strlen(lineHeader) + 1);
+						mbstowcs_s(&i, rv1.texture, 128, loc.c_str(), loc.size() + 1);
 
 						break;
 					}

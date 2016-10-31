@@ -109,6 +109,15 @@
     <Image Include="Assets\Helicopter.obj">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Assets\T_HeavyTurret_D.dds">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Turret.obj">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Turret.mtl">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />

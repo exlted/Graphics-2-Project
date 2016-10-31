@@ -222,7 +222,7 @@ void App2::GeneratedCube::Render()
 
 	auto context = m_deviceResources->GetD3DDeviceContext();
 	context->UpdateSubresource(m_constantBuffer.Get(), 0, nullptr, &m_constantBufferData, 0, 0);
-	context->UpdateSubresource(m_lightingBuffer.Get(), 0, nullptr, &light, 0, 0);
+	context->UpdateSubresource(m_lightingBuffer.Get(), 0, nullptr, light, 0, 0);
 	context->UpdateSubresource(m_materialBuffer.Get(), 0, nullptr, &mat, 0, 0);
 	unsigned int stride = sizeof(VertexNormalColor);
 	unsigned int offset = 0;

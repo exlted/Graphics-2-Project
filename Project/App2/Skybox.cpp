@@ -133,7 +133,7 @@ void App2::Skybox::CreateDeviceDependentResources()
 		);
 		auto device = m_deviceResources->GetD3DDevice();
 
-		HRESULT hr = CreateDDSTextureFromFile(device, L"night_skybox.dds", nullptr, &m_Texture, 0);
+		HRESULT hr = CreateDDSTextureFromFile(device, L"Assets\\night_skybox.dds", nullptr, &m_Texture, 0);
 
 		D3D11_SAMPLER_DESC samplerDesc;
 		ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));

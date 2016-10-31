@@ -184,6 +184,6 @@ float4 main(PixelShaderInput IN) : SV_TARGET
 	}
 
 	float4 finalColor = (emissive + ambient + diffuse + specular) * texColor;
-	return texColor;
-	//return finalColor;
+	//return texColor;
+	return finalColor;
 }
