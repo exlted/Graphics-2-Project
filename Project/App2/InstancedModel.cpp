@@ -191,6 +191,7 @@ void InstancedModel::CreateDeviceDependentResources()
 
 		auto device = m_deviceResources->GetD3DDevice();
 		HRESULT hr = CreateDDSTextureFromFile(device, r.texture, nullptr, &m_Texture, 0);
+		hr = CreateDDSTextureFromFile(device, r.specuMap, nullptr, &m_SpecuMap, 0);
 
 		D3D11_SAMPLER_DESC samplerDesc;
 		ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));

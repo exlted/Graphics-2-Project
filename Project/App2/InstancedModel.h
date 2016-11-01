@@ -36,6 +36,7 @@ class InstancedModel
 	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_pixelShaderLightConstBuff;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_pixelShaderMatConstBuff;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_Texture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_SpecuMap;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>  m_sampler;
 
 public:

@@ -10,6 +10,9 @@ Model::Model(char modelName[], DirectX::XMFLOAT4X4 * camera, DirectX::XMFLOAT4X4
 	this->m_deviceResources = m_deviceResources;
 	this->Lights = Lights;
 	this->CreateDeviceDependentResources();
+	Props.Material = App2::chrome;
+	Props.Material.UseSpecular = true;
+	Props.Material.UseTexture = true;
 }
 
 void Model::Update(DX::StepTimer const & timer)
@@ -26,7 +29,6 @@ void Model::Update(DX::StepTimer const & timer)
 	DirectX::XMStoreFloat4x4(&data.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(Projection)));
 	DirectX::XMStoreFloat4x4(&data.WorldMatrix, XMMatrixTranspose(DirectX::XMMatrixIdentity()));
 	DirectX::XMStoreFloat4x4(&data.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&data.WorldMatrix)))));
-	Props.Material.UseTexture = true;
 	return;
 }
 
@@ -57,7 +59,8 @@ bool Model::Render()
 	ID3D11Buffer* pixelShaderConstantBuffers[2] = {m_pixelShaderMatConstBuff.Get(), m_pixelShaderLightConstBuff.Get()};
 	context->PSSetConstantBuffers(0, 2, pixelShaderConstantBuffers);
 	context->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
-	context->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
+	ID3D11ShaderResourceView *texBuffers[2] = { m_Texture.Get() , m_SpecuMap.Get()};
+	context->PSSetShaderResources(0, 2, texBuffers);
 
 	context->DrawIndexed(indexCount, 0, 0);
 	//context->Draw(indexCount, 0);
@@ -182,6 +185,7 @@ void Model::CreateDeviceDependentResources()
 		);
 		auto device = m_deviceResources->GetD3DDevice();
 		HRESULT hr = CreateDDSTextureFromFile(device, r.texture, nullptr, &m_Texture, 0);
+		hr = CreateDDSTextureFromFile(device, r.specuMap, nullptr, &m_SpecuMap, 0);
 
 		D3D11_SAMPLER_DESC samplerDesc;
 		ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));

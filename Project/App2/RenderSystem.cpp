@@ -92,7 +92,7 @@ void RenderSystem::Update(DX::StepTimer const & timer)
 	};
 
 	static const LightType LightTypes[MAX_LIGHTS] = {
-		SpotLight, PointLight, SpotLight, PointLight, SpotLight, PointLight, SpotLight, PointLight
+		DirectionalLight, PointLight, SpotLight, PointLight, SpotLight, PointLight, SpotLight, PointLight
 	};
 
 	static const bool LightEnabled[MAX_LIGHTS] = {
