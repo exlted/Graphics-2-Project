@@ -85,8 +85,8 @@ namespace App2
 		int                 UseTexture;
 
 		int                 UseSpecular;
-		// Add some padding to complete the 16 byte boundary.
-		float                 Padding;
+
+		int                 UseNormal;
 		//----------------------------------- (16 byte boundary)
 	}; // Total:                                80 bytes (5 * 16)
 

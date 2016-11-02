@@ -13,6 +13,7 @@ Model::Model(char modelName[], DirectX::XMFLOAT4X4 * camera, DirectX::XMFLOAT4X4
 	Props.Material = App2::chrome;
 	Props.Material.UseSpecular = true;
 	Props.Material.UseTexture = true;
+	Props.Material.UseNormal = true;
 }
 
 void Model::Update(DX::StepTimer const & timer)
@@ -20,6 +21,7 @@ void Model::Update(DX::StepTimer const & timer)
 	if (!m_loadingComplete)
 	{
 		return;
+		lastUpdate = timer.GetTotalSeconds();
 	}
 
 	auto context = m_deviceResources->GetD3DDeviceContext();
@@ -29,6 +31,13 @@ void Model::Update(DX::StepTimer const & timer)
 	DirectX::XMStoreFloat4x4(&data.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(Projection)));
 	DirectX::XMStoreFloat4x4(&data.WorldMatrix, XMMatrixTranspose(DirectX::XMMatrixIdentity()));
 	DirectX::XMStoreFloat4x4(&data.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&data.WorldMatrix)))));
+
+	if(lastUpdate + 5.0f < timer.GetTotalSeconds())
+	{
+		lastUpdate = timer.GetTotalSeconds();
+		Props.Material.UseNormal = !Props.Material.UseNormal;
+	}
+
 	return;
 }
 
@@ -59,8 +68,8 @@ bool Model::Render()
 	ID3D11Buffer* pixelShaderConstantBuffers[2] = {m_pixelShaderMatConstBuff.Get(), m_pixelShaderLightConstBuff.Get()};
 	context->PSSetConstantBuffers(0, 2, pixelShaderConstantBuffers);
 	context->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
-	ID3D11ShaderResourceView *texBuffers[2] = { m_Texture.Get() , m_SpecuMap.Get()};
-	context->PSSetShaderResources(0, 2, texBuffers);
+	ID3D11ShaderResourceView *texBuffers[3] = { m_Texture.Get() , m_SpecuMap.Get(), m_NormalMap.Get()};
+	context->PSSetShaderResources(0, 3, texBuffers);
 
 	context->DrawIndexed(indexCount, 0, 0);
 	//context->Draw(indexCount, 0);
@@ -186,7 +195,7 @@ void Model::CreateDeviceDependentResources()
 		auto device = m_deviceResources->GetD3DDevice();
 		HRESULT hr = CreateDDSTextureFromFile(device, r.texture, nullptr, &m_Texture, 0);
 		hr = CreateDDSTextureFromFile(device, r.specuMap, nullptr, &m_SpecuMap, 0);
-
+		hr = CreateDDSTextureFromFile(device, r.normalMap, nullptr, &m_NormalMap, 0);
 		D3D11_SAMPLER_DESC samplerDesc;
 		ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
 
@@ -240,10 +249,16 @@ void Model::CreateDeviceDependentResources()
 void Model::ReleaseDeviceDependentResources()
 {
 	m_loadingComplete = false;
-	m_vertexShader.Reset();
 	m_inputLayout.Reset();
-	m_pixelShader.Reset();
-	m_constantBuffer.Reset();
 	m_vertexBuffer.Reset();
 	m_indexBuffer.Reset();
+	m_vertexShader.Reset();
+	m_pixelShader.Reset();
+	m_constantBuffer.Reset();
+	m_pixelShaderLightConstBuff.Reset();
+	m_pixelShaderMatConstBuff.Reset();
+	m_Texture.Reset();
+	m_SpecuMap.Reset();
+	m_NormalMap.Reset();
+	m_sampler.Reset();
 }

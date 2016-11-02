@@ -19,22 +19,24 @@ class Model
 	DirectX::XMFLOAT4X4 * Projection;
 	bool m_loadingComplete = false;
 	unsigned int indexCount;
+	float lastUpdate;
 
 
 
 	std::shared_ptr<DX::DeviceResources> m_deviceResources;
 
-	Microsoft::WRL::ComPtr<ID3D11InputLayout>	m_inputLayout;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_vertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_indexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11VertexShader>	m_vertexShader;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>	m_pixelShader;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_constantBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_pixelShaderLightConstBuff;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_pixelShaderMatConstBuff;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>	     m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>		     m_vertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>		     m_indexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader>	     m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>	     m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>		     m_constantBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>		     m_pixelShaderLightConstBuff;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>		     m_pixelShaderMatConstBuff;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_Texture;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_SpecuMap;
-	Microsoft::WRL::ComPtr<ID3D11SamplerState>  m_sampler;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_NormalMap;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>       m_sampler;
 
 public:
 	Model(char modelName[], DirectX::XMFLOAT4X4* camera, DirectX::XMFLOAT4X4* projection, std::shared_ptr<DX::DeviceResources> m_deviceResources, lightProperties * Lights);

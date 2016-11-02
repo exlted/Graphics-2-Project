@@ -23,27 +23,15 @@
     <ClCompile Include="Common\DeviceResources.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClInclude Include="Content\Sample3DSceneRenderer.h">
-      <Filter>Content</Filter>
-    </ClInclude>
     <ClInclude Include="Content\SampleFpsTextRenderer.h">
       <Filter>Content</Filter>
     </ClInclude>
     <ClInclude Include="Content\ShaderStructures.h">
       <Filter>Content</Filter>
     </ClInclude>
-    <ClCompile Include="Content\Sample3DSceneRenderer.cpp">
-      <Filter>Content</Filter>
-    </ClCompile>
     <ClCompile Include="Content\SampleFpsTextRenderer.cpp">
       <Filter>Content</Filter>
     </ClCompile>
-    <FxCompile Include="Content\SamplePixelShader.hlsl">
-      <Filter>Content</Filter>
-    </FxCompile>
-    <FxCompile Include="Content\SampleVertexShader.hlsl">
-      <Filter>Content</Filter>
-    </FxCompile>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
@@ -62,21 +50,35 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
+    <Filter Include="Content\Depricated">
+      <UniqueIdentifier>{53c16397-9641-4b06-b36e-ae0ac805c358}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="App2Main.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Common\DDSTextureLoader.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Content</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedCube.cpp" />
-    <ClCompile Include="Skybox.cpp" />
-    <ClCompile Include="InstancedModel.cpp" />
+    <ClCompile Include="GeneratedCube.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Sample3DSceneRenderer.cpp">
+      <Filter>Content\Depricated</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\InstancedModel.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Skybox.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -85,16 +87,27 @@
     <ClInclude Include="Model.h">
       <Filter>Content</Filter>
     </ClInclude>
-    <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="ModelLoading.h">
       <Filter>Content</Filter>
     </ClInclude>
     <ClInclude Include="Common\DDSTextureLoader.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedCube.h" />
-    <ClInclude Include="Skybox.h" />
-    <ClInclude Include="InstancedModel.h" />
+    <ClInclude Include="GeneratedCube.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Sample3DSceneRenderer.h">
+      <Filter>Content\Depricated</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\InstancedModel.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Skybox.h">
+      <Filter>Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\StoreLogo.png">
@@ -121,6 +134,7 @@
     <Image Include="Assets\T_HeavyTurret_S.dds">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Assets\T_HeavyTurret_N.dds" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
@@ -135,22 +149,28 @@
     <FxCompile Include="InstancedVertexShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
-    <FxCompile Include="TexturedLitPixelShader.hlsl">
-      <Filter>Content</Filter>
-    </FxCompile>
-    <FxCompile Include="VertexShader.hlsl">
-      <Filter>Content</Filter>
-    </FxCompile>
     <FxCompile Include="ColoredVertexShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
     <FxCompile Include="ColoredLitPixelShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
-    <FxCompile Include="SkyboxVertShader.hlsl">
+    <FxCompile Include="Content\SampleVertexShader.hlsl">
+      <Filter>Content\Depricated</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\SamplePixelShader.hlsl">
+      <Filter>Content\Depricated</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\SkyboxPixelShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
-    <FxCompile Include="SkyboxPixelShader.hlsl">
+    <FxCompile Include="Content\SkyboxVertShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\TexturedLitPixelShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\VertexShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
   </ItemGroup>

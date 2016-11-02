@@ -1,10 +1,10 @@
 #pragma once
 #include "Model.h"
-#include "InstancedModel.h"
+#include "Content\InstancedModel.h"
 #include <DirectXMath.h>
 #include "Content\ShaderStructures.h"
 #include "GeneratedCube.h"
-#include "Skybox.h"
+#include "Content\Skybox.h"
 
 using namespace DirectX;
 struct PerFrameConstantBufferData

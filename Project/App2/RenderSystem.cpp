@@ -130,6 +130,7 @@ void RenderSystem::Update(DX::StepTimer const & timer)
 
 bool RenderSystem::Render()
 {
+
 	Models->Render();
 	skybox->Render();
 	Cube->Render();

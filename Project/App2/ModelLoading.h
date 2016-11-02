@@ -21,6 +21,7 @@ struct ModelReturn
 	unsigned int numIndices;
 	wchar_t* texture;
 	wchar_t* specuMap;
+	wchar_t* normalMap;
 };
 
 // L"ok.obj"
@@ -32,6 +33,7 @@ inline ModelReturn LoadModel(char* fileName)
 	rv1.numIndices = 0;
 	rv1.texture = new wchar_t[128];
 	rv1.specuMap = new wchar_t[128];
+	rv1.normalMap = new wchar_t[128];
 	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
 	std::vector<DirectX::XMFLOAT3> verts;
 	std::vector<DirectX::XMFLOAT3> uvs;
@@ -141,6 +143,14 @@ inline ModelReturn LoadModel(char* fileName)
 						loc += lineHeader;
 						size_t i;
 						mbstowcs_s(&i, rv1.specuMap, 128, loc.c_str(), loc.size() + 1);
+					}
+					if(strcmp(lineHeader, "bump") == 0)
+					{
+						fscanf_s(file2, "%s ", lineHeader, 128);
+						std::string loc = "Assets\\";
+						loc += lineHeader;
+						size_t i;
+						mbstowcs_s(&i, rv1.normalMap, 128, loc.c_str(), loc.size() + 1);
 					}
 					else if(res <= 0)
 					{
