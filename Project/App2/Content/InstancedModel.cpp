@@ -10,7 +10,7 @@ InstancedModel::InstancedModel(char InstancedModelName[], DirectX::XMFLOAT4X4 * 
 	this->m_deviceResources = m_deviceResources;
 	this->Lights = Lights;
 	this->instanceCount = numInstances;
-	dataInstances = new ModelInstanceData[2];
+	dataInstances = new ModelInstanceData[numInstances];
 	this->CreateDeviceDependentResources();
 }
 
@@ -27,7 +27,7 @@ void InstancedModel::Update(DX::StepTimer const & timer)
 	DirectX::XMStoreFloat4x4(&WorldData.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(Projection)));
 	for(unsigned int i = 0; i < instanceCount; i++)
 	{
-		DirectX::XMMATRIX transpose = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&(DirectX::XMFLOAT4((float)i*12.5f, 5, 5, 1))));
+		DirectX::XMMATRIX transpose = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&(DirectX::XMFLOAT4((float)i*12.5f, 5 + ((float)i * timer.GetTotalTicks()) * .00000001f, 5, 1))));
 		DirectX::XMStoreFloat4x4(&dataInstances[i].WorldMatrix,transpose);
 		DirectX::XMStoreFloat4x4(&dataInstances[i].InverseTransposeWorldMatrix, DirectX::XMMatrixTranspose(XMMatrixInverse(nullptr, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(&dataInstances[i].WorldMatrix)))));
 	}

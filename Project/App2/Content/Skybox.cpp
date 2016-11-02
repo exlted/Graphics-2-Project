@@ -88,35 +88,35 @@ void App2::Skybox::CreateDeviceDependentResources()
 		//Load mesh vertices. Each vertex has a position and a color.
 		static const VertexTex cubeVertices[] =
 		{//
-			{ XMFLOAT3(-50.0f, -50.0f, -50.0f),  XMFLOAT2((1.0f/3.0f), 1.0f) }, //x- WEST GOOD
-			{ XMFLOAT3(-50.0f, -50.0f,  50.0f),  XMFLOAT2(0.0f, 1.0f) },
-			{ XMFLOAT3(-50.0f,  50.0f, -50.0f),  XMFLOAT2((1.0f / 3.0f), 0.5f) },
-			{ XMFLOAT3(-50.0f,  50.0f,  50.0f),  XMFLOAT2(0.0f, 0.5f) },
+			{ XMFLOAT3(-49.9f, -50.0f, -50.0f),  XMFLOAT2(0.33333333f, 1.0f) }, //x- WEST GOOD
+			{ XMFLOAT3(-49.9f, -50.0f,  50.0f),  XMFLOAT2(0.0f, 1.0f) },
+			{ XMFLOAT3(-49.9f,  50.0f, -50.0f),  XMFLOAT2(0.33333333f, 0.5f) },
+			{ XMFLOAT3(-49.9f,  50.0f,  50.0f),  XMFLOAT2(0.0f, 0.5f) },
 
-			{ XMFLOAT3(50.0f, -50.0f, -50.0f),   XMFLOAT2((2.0f/3.0f), 1.0f) }, //x+ EAST GOOD
-			{ XMFLOAT3(50.0f, -50.0f,  50.0f),   XMFLOAT2(1.0f, 1.0f) },
-			{ XMFLOAT3(50.0f,  50.0f, -50.0f),   XMFLOAT2((2.0f/3.0f), 0.5f) },
-			{ XMFLOAT3(50.0f,  50.0f,  50.0f),   XMFLOAT2(1.0f, 0.5f) },
+			{ XMFLOAT3(49.9f, -50.0f, -50.0f),   XMFLOAT2(0.66666666f, 1.0f) }, //x+ EAST BAD
+			{ XMFLOAT3(49.9f, -50.0f,  50.0f),   XMFLOAT2(1.0f, 1.0f) }, //BAD
+			{ XMFLOAT3(49.9f,  50.0f, -50.0f),   XMFLOAT2(0.66666666f, 0.5f) },
+			{ XMFLOAT3(49.9f,  50.0f,  50.0f),   XMFLOAT2(1.0f, 0.5f) }, //BAD
 
-			{ XMFLOAT3(-50.0f, -50.0f, -50.0f),  XMFLOAT2(0.0f, 0.0f) }, //y- BOTTOM GOOD
-			{ XMFLOAT3(-50.0f, -50.0f,  50.0f),  XMFLOAT2(0.0f, 0.5f) },
-			{ XMFLOAT3(50.0f, -50.0f, -50.0f),   XMFLOAT2((1.0f / 3.0f), 0.0f) },
-			{ XMFLOAT3(50.0f, -50.0f,  50.0f),   XMFLOAT2((1.0f/3.0f), 0.5f) },
+			{ XMFLOAT3(-50.0f, -49.9f, -50.0f),  XMFLOAT2(0.0f, 0.0f) }, //y- BOTTOM GOOD
+			{ XMFLOAT3(-50.0f, -49.9f,  50.0f),  XMFLOAT2(0.0f, 0.5f) },
+			{ XMFLOAT3(50.0f, -49.9f, -50.0f),   XMFLOAT2(0.3333333333f, 0.0f) },
+			{ XMFLOAT3(50.0f, -49.9f,  50.0f),   XMFLOAT2(0.3333333333f, 0.5f) }, //BAD
 
-			{ XMFLOAT3(-50.0f,  50.0f, -50.0f),  XMFLOAT2((1.0f/3.0f), 0.5f) }, //y+ TOP
-			{ XMFLOAT3(-50.0f,  50.0f,  50.0f),  XMFLOAT2((1.0f/3.0f), 0.0f) },
-			{ XMFLOAT3(50.0f,  50.0f, -50.0f),   XMFLOAT2((2.0f/3.0f), 0.5f) },
-			{ XMFLOAT3(50.0f,  50.0f,  50.0f),   XMFLOAT2((2.0f/3.0f), 0.0f) },
+			{ XMFLOAT3(-50.0f,  49.9f, -50.0f),  XMFLOAT2(0.33333333f, 0.5f) }, //y+ TOP
+			{ XMFLOAT3(-50.0f,  49.9f,  50.0f),  XMFLOAT2(0.33333333f, 0.0f) },
+			{ XMFLOAT3(50.0f,  49.9f, -50.0f),   XMFLOAT2(0.66666666f, 0.5f) },
+			{ XMFLOAT3(50.0f,  49.9f,  50.0f),   XMFLOAT2(0.66666666f, 0.0f) },
 
-			{ XMFLOAT3(-50.0f, -50.0f, -50.0f),  XMFLOAT2((1.0f/3.0f), 1.0f) }, //z- NORTH GOOD
-			{ XMFLOAT3(-50.0f,  50.0f, -50.0f),  XMFLOAT2((1.0f/3.0f), 0.5f) },
-			{ XMFLOAT3(50.0f, -50.0f, -50.0f),   XMFLOAT2((2.0f/3.0f), 1.0f) },
-			{ XMFLOAT3(50.0f,  50.0f, -50.0f),   XMFLOAT2((2.0f/3.0f), 0.5f) },
+			{ XMFLOAT3(-50.0f, -50.0f, -49.9f),  XMFLOAT2(0.33333333f, 1.0f) }, //z- NORTH GOOD
+			{ XMFLOAT3(-50.0f,  50.0f, -49.9f),  XMFLOAT2(0.33333333f, 0.5f) },
+			{ XMFLOAT3(50.0f, -50.0f, -49.9f),   XMFLOAT2(0.66666666f, 1.0f) },
+			{ XMFLOAT3(50.0f,  50.0f, -49.9f),   XMFLOAT2(0.66666666f, 0.5f) },
 
-			{ XMFLOAT3(-50.0f, -50.0f,  50.0f),  XMFLOAT2(1.0f, 0.5f) }, //z+ SOUTH GOOD
-			{ XMFLOAT3(-50.0f,  50.0f,  50.0f),  XMFLOAT2(1.0f, 0.0f) },
-			{ XMFLOAT3(50.0f, -50.0f,  50.0f),   XMFLOAT2((2.0f/3.0f), 0.5f) },
-			{ XMFLOAT3(50.0f,  50.0f,  50.0f),   XMFLOAT2((2.0f / 3.0f), 0.0f) }
+			{ XMFLOAT3(-50.0f, -50.0f,  49.9f),  XMFLOAT2(1.0f, 0.5f) }, //z+ SOUTH BAD
+			{ XMFLOAT3(-50.0f,  50.0f,  49.9f),  XMFLOAT2(1.0f, 0.0f) },
+			{ XMFLOAT3(50.0f, -50.0f,  49.9f),   XMFLOAT2(0.66666666f, 0.5f) }, //BAD
+			{ XMFLOAT3(50.0f,  50.0f,  49.9f),  XMFLOAT2( 0.66666666f, 0.0f) }  //BAD
 		};
 
 		D3D11_SUBRESOURCE_DATA vertexBufferData = { 0 };
