@@ -22,12 +22,18 @@ class RenderSystem
 	std::shared_ptr<DX::DeviceResources> m_deviceResources;
 	DirectX::XMFLOAT4X4 Camera, Projection;
 	lightProperties m_LightProperties;
+
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_RTV;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_DSV;
+
 	float totalTime;
 public:
 	RenderSystem(std::shared_ptr<DX::DeviceResources> m_deviceResources);
 	~RenderSystem();
 	void Update(DX::StepTimer const& timer);
 	bool Render();
+	void CreateDeviceDependantResources();
 	void CreateWindowSizeDependentResources();
+	void ReleaseDeviceDependantResources();
 };
 

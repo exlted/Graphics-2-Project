@@ -111,14 +111,16 @@ void App2::App2Main::OnPointerMoved(Windows::UI::Core::CoreWindow ^ sender, Wind
 // Notifies renderers that device resources need to be released.
 void App2Main::OnDeviceLost()
 {
-	m_sceneRenderer->ReleaseDeviceDependentResources();
+	//m_sceneRenderer->ReleaseDeviceDependentResources();
+	m_renderSystem->ReleaseDeviceDependantResources();
 	m_fpsTextRenderer->ReleaseDeviceDependentResources();
 }
 
 // Notifies renderers that device resources may now be recreated.
 void App2Main::OnDeviceRestored()
 {
-	m_sceneRenderer->CreateDeviceDependentResources();
+	//m_sceneRenderer->CreateDeviceDependentResources();
 	m_fpsTextRenderer->CreateDeviceDependentResources();
+	m_renderSystem->CreateDeviceDependantResources();
 	CreateWindowSizeDependentResources();
 }

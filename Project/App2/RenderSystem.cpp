@@ -130,12 +130,26 @@ void RenderSystem::Update(DX::StepTimer const & timer)
 
 bool RenderSystem::Render()
 {
-
-	Models->Render();
+	//auto context = m_deviceResources->GetD3DDeviceContext();
+	//context->OMSetRenderTargets(1, m_RTV.GetAddressOf(), m_DSV.Get());
 	skybox->Render();
+	Models->Render();
 	Cube->Render();
 	InstancedModels->Render();
 	return true;
+}
+
+void RenderSystem::CreateDeviceDependantResources()
+{
+	skybox->CreateDeviceDependentResources();
+	Models->CreateDeviceDependentResources();
+	Cube->CreateDeviceDependentResources();
+	InstancedModels->CreateDeviceDependentResources();
+	auto device = m_deviceResources->GetD3DDevice();
+	//TODO: Create RTV and DSV to allow for post-processing
+	//D3D11_RENDER_TARGET_VIEW_DESC rtv;
+	//ZeroMemory(&rtv, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
+	//device->CreateRenderTargetView()
 }
 
 void RenderSystem::CreateWindowSizeDependentResources()
@@ -175,4 +189,12 @@ void RenderSystem::CreateWindowSizeDependentResources()
 	);
 
 	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
+}
+
+void RenderSystem::ReleaseDeviceDependantResources()
+{
+	Models->ReleaseDeviceDependentResources();
+	skybox->ReleaseDeviceDependentResources();
+	Cube->ReleaseDeviceDependentResources();
+	InstancedModels->ReleaseDeviceDependentResources();
 }

@@ -210,6 +210,10 @@ float4 main(PixelShaderInput IN) : SV_TARGET
 	}
 
 	float4 finalColor = (emissive + ambient + diffuse + specular) * texColor;
-	//return texColor;
+
+
+	float gray = dot(finalColor.rgb, float3(0.299, 0.587, 0.114));
+	//return gray;
+
 	return finalColor;
 }

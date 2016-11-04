@@ -59,6 +59,7 @@ bool Model::Render()
 	context->IASetVertexBuffers(0, 1, &buffers, &stride, &offset);
 	context->IASetInputLayout(m_inputLayout.Get());
 	context->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
