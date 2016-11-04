@@ -154,12 +154,14 @@ inline ModelReturn LoadModel(char* fileName)
 					}
 					else if(res <= 0)
 					{
+						fclose(file2);
 						break;
 					}
 				}
 			}
 		}
 	}
+	fclose(file);
 	rv1.vert = new VertexPTN[vertexIndices.size()];
 	rv1.indices = new uint16_t[vertexIndices.size()];
 	for (unsigned int i = 0; i < vertexIndices.size(); i++)

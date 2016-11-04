@@ -13,7 +13,7 @@ Model::Model(char modelName[], DirectX::XMFLOAT4X4 * camera, DirectX::XMFLOAT4X4
 	Props.Material = App2::chrome;
 	Props.Material.UseSpecular = true;
 	Props.Material.UseTexture = true;
-	Props.Material.UseNormal = true;
+	Props.Material.UseNormal = false;
 }
 
 void Model::Update(DX::StepTimer const & timer)
@@ -32,11 +32,11 @@ void Model::Update(DX::StepTimer const & timer)
 	DirectX::XMStoreFloat4x4(&data.WorldMatrix, XMMatrixTranspose(DirectX::XMMatrixIdentity()));
 	DirectX::XMStoreFloat4x4(&data.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&data.WorldMatrix)))));
 
-	if(lastUpdate + 5.0f < timer.GetTotalSeconds())
-	{
-		lastUpdate = timer.GetTotalSeconds();
-		Props.Material.UseNormal = !Props.Material.UseNormal;
-	}
+	//if(lastUpdate + 5.0f < timer.GetTotalSeconds())
+	//{
+	//	lastUpdate = timer.GetTotalSeconds();
+	//	Props.Material.UseNormal = !Props.Material.UseNormal;
+	//}
 
 	return;
 }
