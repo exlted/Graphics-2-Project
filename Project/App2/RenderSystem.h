@@ -12,6 +12,12 @@ struct PerFrameConstantBufferData
 	DirectX::XMMATRIX ViewProjectionMatrix;
 };
 
+struct AppData
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
+};
+
 class RenderSystem
 {
 	Model *Models;
@@ -23,8 +29,20 @@ class RenderSystem
 	DirectX::XMFLOAT4X4 Camera, Projection;
 	lightProperties m_LightProperties;
 
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_RTV;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_DSV;
+	AppData screenOrientedQuad[4];
+
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView1> m_RTV;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D1>        m_RTVBuffer;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader>	    m_vertexShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>	    m_pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>       m_inputLayout;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>            m_vertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>            m_indexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>m_Texture;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>      m_sampler;
+
+	unsigned int m_indexCount;
+	bool m_loaded = false;
 
 	float totalTime;
 public:

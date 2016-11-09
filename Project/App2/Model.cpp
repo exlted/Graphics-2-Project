@@ -9,7 +9,6 @@ Model::Model(char modelName[], DirectX::XMFLOAT4X4 * camera, DirectX::XMFLOAT4X4
 	this->Projection = projection;
 	this->m_deviceResources = m_deviceResources;
 	this->Lights = Lights;
-	this->CreateDeviceDependentResources();
 	Props.Material = App2::chrome;
 	Props.Material.UseSpecular = true;
 	Props.Material.UseTexture = true;

@@ -173,5 +173,7 @@
     <FxCompile Include="Content\VertexShader.hlsl">
       <Filter>Content</Filter>
     </FxCompile>
+    <FxCompile Include="Content\PostVertexShader.hlsl" />
+    <FxCompile Include="Content\PostPixelShader.hlsl" />
   </ItemGroup>
 </Project>

@@ -11,7 +11,6 @@ InstancedModel::InstancedModel(char InstancedModelName[], DirectX::XMFLOAT4X4 * 
 	this->Lights = Lights;
 	this->instanceCount = numInstances;
 	dataInstances = new ModelInstanceData[numInstances];
-	this->CreateDeviceDependentResources();
 }
 
 void InstancedModel::Update(DX::StepTimer const & timer)

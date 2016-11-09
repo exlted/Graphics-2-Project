@@ -9,7 +9,6 @@ App2::GeneratedCube::GeneratedCube(const std::shared_ptr<DX::DeviceResources>& d
 	this->m_deviceResources = deviceResources;
 	this->proj = Projection;
 	m_degreesPerSecond = 45;
-	CreateDeviceDependentResources();
 }
 
 void App2::GeneratedCube::CreateDeviceDependentResources()

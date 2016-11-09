@@ -9,7 +9,6 @@ App2::Skybox::Skybox(const std::shared_ptr<DX::DeviceResources>& deviceResources
 	this->m_deviceResources = deviceResources;
 	this->proj = Projection;
 	m_degreesPerSecond = 45;
-	CreateDeviceDependentResources();
 }
 
 void App2::Skybox::CreateDeviceDependentResources()
@@ -253,8 +252,8 @@ void App2::Skybox::Render()
 	context->PSSetConstantBuffers(0, 2, pixelShaderConstantBuffers);
 	context->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
 	context->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
-	//
-	context->DrawIndexed(m_indexCount, 0, 0);\
+
+	context->DrawIndexed(m_indexCount, 0, 0);
 	context->ClearDepthStencilView(m_deviceResources->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	return;
