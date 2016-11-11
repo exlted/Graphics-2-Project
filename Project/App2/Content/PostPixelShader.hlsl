@@ -13,5 +13,5 @@ float4 main( ToPixel IN ) : SV_TARGET
 
 	float gray = dot(color.rgb, float3(0.299, 0.587, 0.114));
 
-	return color;
+	return gray;
 }
