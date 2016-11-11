@@ -8,7 +8,7 @@ RenderSystem::RenderSystem(std::shared_ptr<DX::DeviceResources> m_deviceResource
 	static const DirectX::XMVECTORF32 eye = { 0.0f, 0.0f, -1.5f, 0.0f };
 	static const DirectX::XMVECTORF32 at = { 0.0f, 0.0f, 0.0f, 0.0f };
 	static const DirectX::XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
-	XMStoreFloat4x4(&Camera, XMMatrixLookAtRH(eye, at, up));
+	XMStoreFloat4x4(&CameraStorage, XMMatrixLookAtRH(eye, at, up));
 	this->Models = new Model("Assets\\Turret.obj", &Camera , &Projection, m_deviceResources, &m_LightProperties);
 	this->InstancedModels = new InstancedModel("Assets\\Helicopter.obj", &Camera, &Projection, m_deviceResources, &m_LightProperties, 2);
 	this->Cube = new GeneratedCube(m_deviceResources, &Camera, &Projection, &m_LightProperties);
@@ -45,7 +45,7 @@ extern char buttons[256];
 
 void RenderSystem::Update(DX::StepTimer const & timer)
 {
-	DirectX::XMMATRIX newcamera = XMLoadFloat4x4(&Camera);
+	DirectX::XMMATRIX newcamera = XMLoadFloat4x4(&CameraStorage);
 
 	if (buttons['W'])
 	{
@@ -84,7 +84,7 @@ void RenderSystem::Update(DX::StepTimer const & timer)
 		}
 	}
 
-	XMStoreFloat4x4(&Camera, newcamera);
+	XMStoreFloat4x4(&CameraStorage, newcamera);
 
 	XMStoreFloat4(&m_LightProperties.EyePosition, newcamera.r[3]);
 
@@ -129,49 +129,70 @@ void RenderSystem::Update(DX::StepTimer const & timer)
 	totalTime += (float)timer.GetElapsedSeconds();
 }
 
-bool RenderSystem::Render()
+bool RenderSystem::Render(bool isViewport)
 {
 	if(!m_loaded)
 	{
 		return false;
 	}
-	auto context = m_deviceResources->GetD3DDeviceContext();
-	auto device = m_deviceResources->GetD3DDevice();
-	ID3D11RenderTargetView *const targets[1] = { m_RTV2.Get() };
-	context->OMSetRenderTargets(1, targets, m_deviceResources->GetDepthStencilView());
-	skybox->Render();
-	Models->Render(nullptr);
-	Cube->Render();
-	ID3D11RenderTargetView *const targety[1] = { m_RTV.Get() };
-	context->OMSetRenderTargets(1, targety, m_deviceResources->GetDepthStencilView());
-	device->CreateShaderResourceView(m_RTVBuffer2.Get(), nullptr, m_Texture.GetAddressOf());
-	skybox->Render();
-	Models->Render(m_Texture.Get());
-	Cube->Render();
-	InstancedModels->Render();
-	m_Texture.Reset();
-	ID3D11RenderTargetView *const target[1] = { m_deviceResources->GetBackBufferRenderTargetView() };
-	device->CreateShaderResourceView(m_RTVBuffer.Get(), nullptr, m_Texture.GetAddressOf());
-	context->OMSetRenderTargets(1, target, m_deviceResources->GetDepthStencilView());
-	context->UpdateSubresource(m_vertexBuffer.Get(), 0, nullptr, &screenOrientedQuad, 0, 0);
-	unsigned int stride = sizeof(AppData);
-	unsigned int offset = 0;
-	ID3D11Buffer* Buffers = m_vertexBuffer.Get();
-	context->IASetVertexBuffers(0, 1, &Buffers, &stride, &offset);
-	context->IASetInputLayout(m_inputLayout.Get());
-	context->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);;
+	if(!isViewport)
+	{
+		XMStoreFloat4x4(&Camera, XMLoadFloat4x4(&CameraStorage));
+		Models->UpdateCamera();
+		Cube->UpdateCamera();
+		skybox->UpdateCamera();
+		InstancedModels->UpdateCamera();
+		auto context = m_deviceResources->GetD3DDeviceContext();
+		auto device = m_deviceResources->GetD3DDevice();
+		ID3D11RenderTargetView *const targets[1] = { m_RTV2.Get() };
+		context->OMSetRenderTargets(1, targets, m_deviceResources->GetDepthStencilView());
+		skybox->Render();
+		Models->Render(nullptr);
+		Cube->Render();
+		ID3D11RenderTargetView *const targety[1] = { m_RTV.Get() };
+		context->OMSetRenderTargets(1, targety, m_deviceResources->GetDepthStencilView());
+		device->CreateShaderResourceView(m_RTVBuffer2.Get(), nullptr, m_Texture.GetAddressOf());
+		skybox->Render();
+		Models->Render(m_Texture.Get());
+		Cube->Render();
+		InstancedModels->Render();
+		m_Texture.Reset();
+		ID3D11RenderTargetView *const target[1] = { m_deviceResources->GetBackBufferRenderTargetView() };
+		device->CreateShaderResourceView(m_RTVBuffer.Get(), nullptr, m_Texture.GetAddressOf());
+		context->OMSetRenderTargets(1, target, m_deviceResources->GetDepthStencilView());
+		context->UpdateSubresource(m_vertexBuffer.Get(), 0, nullptr, &screenOrientedQuad, 0, 0);
+		unsigned int stride = sizeof(AppData);
+		unsigned int offset = 0;
+		ID3D11Buffer* Buffers = m_vertexBuffer.Get();
+		context->IASetVertexBuffers(0, 1, &Buffers, &stride, &offset);
+		context->IASetInputLayout(m_inputLayout.Get());
+		context->IASetIndexBuffer(m_indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+		context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);;
 
-	context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
+		context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
 
-	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
-	context->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
-	context->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
+		context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
+		context->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+		context->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
 
-	context->DrawIndexed(m_indexCount, 0, 0);
-	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
-	context->PSSetShaderResources(0, 1, pSRV);
-	m_Texture.Reset();
+		context->DrawIndexed(m_indexCount, 0, 0);
+		ID3D11ShaderResourceView *const pSRV[1] = { NULL };
+		context->PSSetShaderResources(0, 1, pSRV);
+		m_Texture.Reset();
+	}
+	else
+	{
+
+		XMStoreFloat4x4(&Camera, XMMatrixMultiply(XMMatrixRotationX(3.5f), XMMatrixTranslationFromVector(XMLoadFloat4(&XMFLOAT4(0, 10, -5, 1)))));
+		Models->UpdateCamera();
+		Cube->UpdateCamera();
+		skybox->UpdateCamera();
+		InstancedModels->UpdateCamera();
+		skybox->Render();
+		Models->Render(nullptr);
+		Cube->Render();
+		InstancedModels->Render();
+	}
 	return true;
 }
 

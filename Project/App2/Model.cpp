@@ -40,6 +40,15 @@ void Model::Update(DX::StepTimer const & timer)
 	return;
 }
 
+void Model::UpdateCamera()
+{
+	auto cam = DirectX::XMMatrixInverse(0, DirectX::XMLoadFloat4x4(Camera));
+	DirectX::XMStoreFloat4x4(&data.View, DirectX::XMMatrixTranspose(DirectX::XMMatrixTranspose(cam)));
+	DirectX::XMStoreFloat4x4(&data.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(Projection)));
+	DirectX::XMStoreFloat4x4(&data.WorldMatrix, XMMatrixTranspose(DirectX::XMMatrixIdentity()));
+	DirectX::XMStoreFloat4x4(&data.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&data.WorldMatrix)))));
+}
+
 bool Model::Render(ID3D11ShaderResourceView *tempTex)
 {
 	if(!m_loadingComplete)

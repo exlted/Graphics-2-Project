@@ -227,6 +227,17 @@ void App2::Skybox::Update(DX::StepTimer const & timer)
 	DirectX::XMStoreFloat4x4(&m_constantBufferData.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_constantBufferData.WorldMatrix)))));;
 }
 
+void App2::Skybox::UpdateCamera()
+{
+	auto cam = DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(camera));
+	DirectX::XMStoreFloat4x4(&m_constantBufferData.View, cam);
+	DirectX::XMStoreFloat4x4(&m_constantBufferData.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(proj)));
+	XMFLOAT4 temp;
+	XMStoreFloat4(&temp, XMLoadFloat4x4(camera).r[3]);
+	DirectX::XMStoreFloat4x4(&m_constantBufferData.WorldMatrix, XMMatrixTranslationFromVector(XMLoadFloat4(&temp)));
+	DirectX::XMStoreFloat4x4(&m_constantBufferData.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_constantBufferData.WorldMatrix)))));;
+}
+
 void App2::Skybox::Render()
 {
 	if (!m_loadingComplete)

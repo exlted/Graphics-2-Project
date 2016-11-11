@@ -42,6 +42,7 @@ public:
 	Model(char modelName[], DirectX::XMFLOAT4X4* camera, DirectX::XMFLOAT4X4* projection, std::shared_ptr<DX::DeviceResources> m_deviceResources, lightProperties * Lights);
 
 	void Update(DX::StepTimer const& timer);
+	void UpdateCamera();
 	bool Render(ID3D11ShaderResourceView *tempTex);
 	void CreateDeviceDependentResources();
 	void ReleaseDeviceDependentResources();

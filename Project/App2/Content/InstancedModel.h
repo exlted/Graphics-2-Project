@@ -42,6 +42,7 @@ class InstancedModel
 public:
 	InstancedModel(char modelName[], DirectX::XMFLOAT4X4* camera, DirectX::XMFLOAT4X4* projection, std::shared_ptr<DX::DeviceResources> m_deviceResources, lightProperties * Lights, unsigned int numInstances);
 	void Update(DX::StepTimer const& timer);
+	void UpdateCamera();
 	bool Render();
 	void CreateDeviceDependentResources();
 	void ReleaseDeviceDependentResources();

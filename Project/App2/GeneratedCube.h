@@ -17,6 +17,7 @@ namespace App2
 		void CreateDeviceDependentResources();
 		void ReleaseDeviceDependentResources();
 		void Update(DX::StepTimer const& timer);
+		void UpdateCamera();
 		void Render();
 		void StartTracking();
 		void TrackingUpdate(float positionX);

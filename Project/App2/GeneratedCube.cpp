@@ -212,6 +212,14 @@ void App2::GeneratedCube::Update(DX::StepTimer const & timer)
 	DirectX::XMStoreFloat4x4(&m_constantBufferData.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_constantBufferData.WorldMatrix)))));;
 }
 
+void App2::GeneratedCube::UpdateCamera()
+{
+	auto cam = DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(camera));
+	DirectX::XMStoreFloat4x4(&m_constantBufferData.View, cam);
+	DirectX::XMStoreFloat4x4(&m_constantBufferData.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(proj)));
+	DirectX::XMStoreFloat4x4(&m_constantBufferData.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_constantBufferData.WorldMatrix)))));;
+}
+
 void App2::GeneratedCube::Render()
 {
 	if (!m_loadingComplete)

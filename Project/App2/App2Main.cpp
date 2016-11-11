@@ -91,8 +91,11 @@ bool App2Main::Render()
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
 	//m_sceneRenderer->Render();
-	m_renderSystem->Render();
+	m_renderSystem->Render(false);
 	m_fpsTextRenderer->Render();
+	context->RSSetViewports(1, &(m_deviceResources->GetScreenViewport2()));
+	context->ClearDepthStencilView(m_deviceResources->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	m_renderSystem->Render(true);
 	return true;
 }
 

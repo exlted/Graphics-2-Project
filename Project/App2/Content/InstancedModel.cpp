@@ -34,6 +34,13 @@ void InstancedModel::Update(DX::StepTimer const & timer)
 	return;
 }
 
+void InstancedModel::UpdateCamera()
+{
+	auto cam = DirectX::XMMatrixInverse(0, DirectX::XMLoadFloat4x4(Camera));
+	DirectX::XMStoreFloat4x4(&WorldData.View, DirectX::XMMatrixTranspose(DirectX::XMMatrixTranspose(cam)));
+	DirectX::XMStoreFloat4x4(&WorldData.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(Projection)));
+}
+
 bool InstancedModel::Render()
 {
 	if (!m_loadingComplete)

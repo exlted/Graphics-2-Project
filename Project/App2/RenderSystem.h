@@ -27,6 +27,7 @@ class RenderSystem
 	PerFrameConstantBufferData data;
 	std::shared_ptr<DX::DeviceResources> m_deviceResources;
 	DirectX::XMFLOAT4X4 Camera, Projection;
+	DirectX::XMFLOAT4X4 CameraStorage;
 	lightProperties m_LightProperties;
 
 	AppData screenOrientedQuad[4];
@@ -52,7 +53,7 @@ public:
 	RenderSystem(std::shared_ptr<DX::DeviceResources> m_deviceResources);
 	~RenderSystem();
 	void Update(DX::StepTimer const& timer);
-	bool Render();
+	bool Render(bool isViewport);
 	void CreateDeviceDependantResources();
 	void CreateWindowSizeDependentResources();
 	void ReleaseDeviceDependantResources();
