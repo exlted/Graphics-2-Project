@@ -41,6 +41,9 @@ class RenderSystem
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>m_Texture;
 	Microsoft::WRL::ComPtr<ID3D11SamplerState>      m_sampler;
 
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView1> m_RTV2;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D1>        m_RTVBuffer2;
+
 	unsigned int m_indexCount;
 	bool m_loaded = false;
 

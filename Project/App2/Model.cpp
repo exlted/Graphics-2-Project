@@ -40,11 +40,16 @@ void Model::Update(DX::StepTimer const & timer)
 	return;
 }
 
-bool Model::Render()
+bool Model::Render(ID3D11ShaderResourceView *tempTex)
 {
 	if(!m_loadingComplete)
 	{
 		return false;
+	}
+
+	if(tempTex == nullptr)
+	{
+		tempTex = m_Texture.Get();
 	}
 
 	auto context = m_deviceResources->GetD3DDeviceContext();
@@ -68,10 +73,12 @@ bool Model::Render()
 	ID3D11Buffer* pixelShaderConstantBuffers[2] = {m_pixelShaderMatConstBuff.Get(), m_pixelShaderLightConstBuff.Get()};
 	context->PSSetConstantBuffers(0, 2, pixelShaderConstantBuffers);
 	context->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
-	ID3D11ShaderResourceView *texBuffers[3] = { m_Texture.Get() , m_SpecuMap.Get(), m_NormalMap.Get()};
+	ID3D11ShaderResourceView *texBuffers[3] = { tempTex , m_SpecuMap.Get(), m_NormalMap.Get()};
 	context->PSSetShaderResources(0, 3, texBuffers);
 
 	context->DrawIndexed(indexCount, 0, 0);
+	ID3D11ShaderResourceView *const pSRV[1] = { NULL };
+	context->PSSetShaderResources(0, 1, pSRV);
 	//context->Draw(indexCount, 0);
 
 	return true;

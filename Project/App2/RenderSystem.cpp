@@ -137,12 +137,19 @@ bool RenderSystem::Render()
 	}
 	auto context = m_deviceResources->GetD3DDeviceContext();
 	auto device = m_deviceResources->GetD3DDevice();
-	ID3D11RenderTargetView *const targets[1] = { m_RTV.Get() };
+	ID3D11RenderTargetView *const targets[1] = { m_RTV2.Get() };
 	context->OMSetRenderTargets(1, targets, m_deviceResources->GetDepthStencilView());
 	skybox->Render();
-	Models->Render();
+	Models->Render(nullptr);
+	Cube->Render();
+	ID3D11RenderTargetView *const targety[1] = { m_RTV.Get() };
+	context->OMSetRenderTargets(1, targety, m_deviceResources->GetDepthStencilView());
+	device->CreateShaderResourceView(m_RTVBuffer2.Get(), nullptr, m_Texture.GetAddressOf());
+	skybox->Render();
+	Models->Render(m_Texture.Get());
 	Cube->Render();
 	InstancedModels->Render();
+	m_Texture.Reset();
 	ID3D11RenderTargetView *const target[1] = { m_deviceResources->GetBackBufferRenderTargetView() };
 	device->CreateShaderResourceView(m_RTVBuffer.Get(), nullptr, m_Texture.GetAddressOf());
 	context->OMSetRenderTargets(1, target, m_deviceResources->GetDepthStencilView());
@@ -325,7 +332,9 @@ void RenderSystem::CreateWindowSizeDependentResources()
 	);
 	auto device = m_deviceResources->GetD3DDevice();
 	device->CreateTexture2D1(&depthStencilDesc, nullptr, m_RTVBuffer.GetAddressOf());
+	device->CreateTexture2D1(&depthStencilDesc, nullptr, m_RTVBuffer2.GetAddressOf());
 	device->CreateRenderTargetView1(m_RTVBuffer.Get(), nullptr, m_RTV.GetAddressOf());
+	device->CreateRenderTargetView1(m_RTVBuffer2.Get(), nullptr, m_RTV2.GetAddressOf());
 
 
 	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
@@ -344,5 +353,7 @@ void RenderSystem::ReleaseDeviceDependantResources()
 	m_indexBuffer.Reset();
 	m_Texture.Reset();
 	m_sampler.Reset();
+	m_RTV2.Reset();
+	m_RTVBuffer2.Reset();
 	m_loaded = false;
 }
