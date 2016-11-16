@@ -12,7 +12,10 @@ InstancedModel::InstancedModel(char InstancedModelName[], DirectX::XMFLOAT4X4 * 
 	this->instanceCount = numInstances;
 	dataInstances = new ModelInstanceData[numInstances];
 }
-
+/// <summary>
+/// Updates the model based on the timer.
+/// </summary>
+/// <param name="timer">The timer.</param>
 void InstancedModel::Update(DX::StepTimer const & timer)
 {
 	if (!m_loadingComplete)
@@ -33,14 +36,19 @@ void InstancedModel::Update(DX::StepTimer const & timer)
 	Props.Material.UseTexture = true;
 	return;
 }
-
+/// <summary>
+/// Updates the camera.
+/// </summary>
 void InstancedModel::UpdateCamera()
 {
 	auto cam = DirectX::XMMatrixInverse(0, DirectX::XMLoadFloat4x4(Camera));
 	DirectX::XMStoreFloat4x4(&WorldData.View, DirectX::XMMatrixTranspose(DirectX::XMMatrixTranspose(cam)));
 	DirectX::XMStoreFloat4x4(&WorldData.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(Projection)));
 }
-
+/// <summary>
+/// Renders this instance.
+/// </summary>
+/// <returns></returns>
 bool InstancedModel::Render()
 {
 	if (!m_loadingComplete)
@@ -72,12 +80,13 @@ bool InstancedModel::Render()
 	context->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
 	context->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
 
-	//context->DrawIndexed(indexCount, 0, 0);
 	context->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, 0);
 
 	return true;
 }
-
+/// <summary>
+/// Creates the device dependent resources.
+/// </summary>
 void InstancedModel::CreateDeviceDependentResources()
 {
 	auto loadVSTask = DX::ReadDataAsync(L"InstancedVertexShader.cso");
@@ -92,13 +101,6 @@ void InstancedModel::CreateDeviceDependentResources()
 				&m_vertexShader
 			)
 		);
-
-		//static const D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
-		//{
-		//	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		//	{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		//	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		//};
 
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 		{
@@ -248,7 +250,9 @@ void InstancedModel::CreateDeviceDependentResources()
 	});
 
 }
-
+/// <summary>
+/// Releases the device dependent resources.
+/// </summary>
 void InstancedModel::ReleaseDeviceDependentResources()
 {
 	m_loadingComplete = false;

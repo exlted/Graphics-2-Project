@@ -3,6 +3,7 @@
 
 #include "..\Common\DirectXHelper.h"
 
+
 RenderSystem::RenderSystem(std::shared_ptr<DX::DeviceResources> m_deviceResources)
 {
 	static const DirectX::XMVECTORF32 eye = { 0.0f, 0.0f, -1.5f, 0.0f };
@@ -19,6 +20,9 @@ RenderSystem::RenderSystem(std::shared_ptr<DX::DeviceResources> m_deviceResource
 	int i = 0;
 }
 
+/// <summary>
+/// Finalizes an instance of the <see cref="RenderSystem"/> class.
+/// </summary>
 RenderSystem::~RenderSystem()
 {
 	Models->ReleaseDeviceDependentResources();
@@ -42,7 +46,10 @@ extern bool d_down;
 extern bool left_click;
 
 extern char buttons[256];
-
+/// <summary>
+/// Updates the scene based on the timer.
+/// </summary>
+/// <param name="timer">The world timer.</param>
 void RenderSystem::Update(DX::StepTimer const & timer)
 {
 	DirectX::XMMATRIX newcamera = XMLoadFloat4x4(&CameraStorage);
@@ -128,7 +135,11 @@ void RenderSystem::Update(DX::StepTimer const & timer)
 	InstancedModels->Update(timer);
 	totalTime += (float)timer.GetElapsedSeconds();
 }
-
+/// <summary>
+/// Renders the scene.
+/// </summary>
+/// <param name="isViewport">if set to <c>true</c> renders the scene that is seen in the view-port.</param>
+/// <returns></returns>
 bool RenderSystem::Render(bool isViewport)
 {
 	if(!m_loaded)
@@ -195,7 +206,9 @@ bool RenderSystem::Render(bool isViewport)
 	}
 	return true;
 }
-
+/// <summary>
+/// Creates the device dependant resources. Runs every time the device is acquired
+/// </summary>
 void RenderSystem::CreateDeviceDependantResources()
 {
 	skybox->CreateDeviceDependentResources();
@@ -304,7 +317,9 @@ void RenderSystem::CreateDeviceDependantResources()
 
 	m_loaded = true;
 }
-
+/// <summary>
+/// Creates the window size dependent resources. Runs every time the screen size changes
+/// </summary>
 void RenderSystem::CreateWindowSizeDependentResources()
 {
 	Windows::Foundation::Size outputSize = this->m_deviceResources->GetOutputSize();
@@ -360,7 +375,9 @@ void RenderSystem::CreateWindowSizeDependentResources()
 
 	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
 }
-
+/// <summary>
+/// Releases the device dependant resources.
+/// </summary>
 void RenderSystem::ReleaseDeviceDependantResources()
 {
 	Models->ReleaseDeviceDependentResources();

@@ -10,7 +10,9 @@ App2::GeneratedCube::GeneratedCube(const std::shared_ptr<DX::DeviceResources>& d
 	this->proj = Projection;
 	m_degreesPerSecond = 45;
 }
-
+/// <summary>
+/// Creates the device dependent resources.
+/// </summary>
 void App2::GeneratedCube::CreateDeviceDependentResources()
 {
 	auto loadVSTask = DX::ReadDataAsync(L"ColoredVertexShader.cso");
@@ -181,7 +183,9 @@ void App2::GeneratedCube::CreateDeviceDependentResources()
 	});
 
 }
-
+/// <summary>
+/// Releases the device dependent resources.
+/// </summary>
 void App2::GeneratedCube::ReleaseDeviceDependentResources()
 {
 	m_loadingComplete = false;
@@ -194,7 +198,10 @@ void App2::GeneratedCube::ReleaseDeviceDependentResources()
 	m_lightingBuffer.Reset();
 	m_materialBuffer.Reset();
 }
-
+/// <summary>
+/// Updates the model using the specified timer.
+/// </summary>
+/// <param name="timer">The timer.</param>
 void App2::GeneratedCube::Update(DX::StepTimer const & timer)
 {
 	if (!m_tracking)
@@ -211,7 +218,9 @@ void App2::GeneratedCube::Update(DX::StepTimer const & timer)
 	DirectX::XMStoreFloat4x4(&m_constantBufferData.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(proj)));
 	DirectX::XMStoreFloat4x4(&m_constantBufferData.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_constantBufferData.WorldMatrix)))));;
 }
-
+/// <summary>
+/// Updates the camera.
+/// </summary>
 void App2::GeneratedCube::UpdateCamera()
 {
 	auto cam = DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(camera));
@@ -219,7 +228,9 @@ void App2::GeneratedCube::UpdateCamera()
 	DirectX::XMStoreFloat4x4(&m_constantBufferData.Projection, DirectX::XMMatrixTranspose(DirectX::XMLoadFloat4x4(proj)));
 	DirectX::XMStoreFloat4x4(&m_constantBufferData.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_constantBufferData.WorldMatrix)))));;
 }
-
+/// <summary>
+/// Renders this instance.
+/// </summary>
 void App2::GeneratedCube::Render()
 {
 	if (!m_loadingComplete)
@@ -245,19 +256,21 @@ void App2::GeneratedCube::Render()
 	context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
 	ID3D11Buffer* pixelShaderConstantBuffers[2] = { m_materialBuffer.Get(), m_lightingBuffer.Get() };
 	context->PSSetConstantBuffers(0, 2, pixelShaderConstantBuffers);
-	//context->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
-	//context->PSSetShaderResources(0, 1, m_Texture.GetAddressOf());
-	//
 	context->DrawIndexed(m_indexCount, 0, 0);
 
 	return;
 }
-
+/// <summary>
+/// Starts the tracking.
+/// </summary>
 void App2::GeneratedCube::StartTracking()
 {
 	m_tracking = true;
 }
-
+/// <summary>
+/// Updates the tracking.
+/// </summary>
+/// <param name="positionX">The position x.</param>
 void App2::GeneratedCube::TrackingUpdate(float positionX)
 {
 	if (m_tracking)
@@ -266,12 +279,17 @@ void App2::GeneratedCube::TrackingUpdate(float positionX)
 		Rotate(radians);
 	}
 }
-
+/// <summary>
+/// Stops the tracking.
+/// </summary>
 void App2::GeneratedCube::StopTracking()
 {
 	m_tracking = false;
 }
-
+/// <summary>
+/// Rotates the instance
+/// </summary>
+/// <param name="radians">The number of radians.</param>
 void App2::GeneratedCube::Rotate(float radians)
 {
 	XMStoreFloat4x4(&m_constantBufferData.WorldMatrix, XMMatrixTranspose(XMMatrixRotationY(radians)));

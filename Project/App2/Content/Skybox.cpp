@@ -10,7 +10,9 @@ App2::Skybox::Skybox(const std::shared_ptr<DX::DeviceResources>& deviceResources
 	this->proj = Projection;
 	m_degreesPerSecond = 45;
 }
-
+/// <summary>
+/// Creates the device dependent resources.
+/// </summary>
 void App2::Skybox::CreateDeviceDependentResources()
 {
 	auto loadVSTask = DX::ReadDataAsync(L"SkyboxVertShader.cso");
@@ -201,7 +203,9 @@ void App2::Skybox::CreateDeviceDependentResources()
 	});
 
 }
-
+/// <summary>
+/// Releases the device dependent resources.
+/// </summary>
 void App2::Skybox::ReleaseDeviceDependentResources()
 {
 	m_loadingComplete = false;
@@ -216,6 +220,10 @@ void App2::Skybox::ReleaseDeviceDependentResources()
 	m_Texture.Reset();
 	m_sampler.Reset();
 }
+/// <summary>
+/// Updates the instances
+/// </summary>
+/// <param name="timer">The timer.</param>
 void App2::Skybox::Update(DX::StepTimer const & timer)
 {
 	auto cam = DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(camera));
@@ -226,7 +234,9 @@ void App2::Skybox::Update(DX::StepTimer const & timer)
 	DirectX::XMStoreFloat4x4(&m_constantBufferData.WorldMatrix, XMMatrixTranslationFromVector(XMLoadFloat4(&temp)));
 	DirectX::XMStoreFloat4x4(&m_constantBufferData.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_constantBufferData.WorldMatrix)))));;
 }
-
+/// <summary>
+/// Updates the camera.
+/// </summary>
 void App2::Skybox::UpdateCamera()
 {
 	auto cam = DirectX::XMMatrixInverse(nullptr, DirectX::XMLoadFloat4x4(camera));
@@ -237,7 +247,9 @@ void App2::Skybox::UpdateCamera()
 	DirectX::XMStoreFloat4x4(&m_constantBufferData.WorldMatrix, XMMatrixTranslationFromVector(XMLoadFloat4(&temp)));
 	DirectX::XMStoreFloat4x4(&m_constantBufferData.InverseTransposeWorldMatrix, XMMatrixTranspose(XMMatrixInverse(nullptr, XMMatrixTranspose(DirectX::XMLoadFloat4x4(&m_constantBufferData.WorldMatrix)))));;
 }
-
+/// <summary>
+/// Renders this instance.
+/// </summary>
 void App2::Skybox::Render()
 {
 	if (!m_loadingComplete)
